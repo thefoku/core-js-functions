@@ -51,8 +51,8 @@ function getFunctionBody(func) {
  *  ]) => [0, 1, 2]
  *
  */
-function getArgumentsCount(/* funcs */) {
-  throw new Error('Not implemented');
+function getArgumentsCount(funcs) {
+  return funcs.map((elem) => elem.length);
 }
 
 /**
@@ -71,8 +71,8 @@ function getArgumentsCount(/* funcs */) {
  *   power05(16) => 4
  *
  */
-function getPowerFunction(/* exponent */) {
-  throw new Error('Not implemented');
+function getPowerFunction(exponent) {
+  return (x) => x ** exponent;
 }
 
 /**
@@ -88,8 +88,12 @@ function getPowerFunction(/* exponent */) {
  *   getPolynom(8)     => y = 8
  *   getPolynom()      => null
  */
-function getPolynom() {
-  throw new Error('Not implemented');
+function getPolynom(...args) {
+  if (args.length === 0) return null;
+  if (args.length === 1) return () => args[0];
+  if (args.length === 2) return (x) => args[0] * x + args[1];
+  if (args.length === 3) return (x) => args[0] * x ** 2 + args[1] * x + args[2];
+  return null;
 }
 
 /**
@@ -106,8 +110,21 @@ function getPolynom() {
  *   ...
  *   memoizer() => the same random number  (next run, returns the previous cached result)
  */
-function memoize(/* func */) {
-  throw new Error('Not implemented');
+function memoize(func) {
+  const cache = new Map();
+
+  return (...args) => {
+    const key = JSON.stringify(args);
+
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+
+    const result = func.apply(this, args);
+    cache.set(key, result);
+
+    return result;
+  };
 }
 
 /**
@@ -125,8 +142,18 @@ function memoize(/* func */) {
  * }, 2);
  * retryer() => 2
  */
-function retry(/* func, attempts */) {
-  throw new Error('Not implemented');
+function retry(func, attempts) {
+  return () => {
+    let count;
+    for (let i = 0; i < attempts; i += 1) {
+      try {
+        return func.call(this);
+      } catch (error) {
+        count = error;
+      }
+    }
+    throw count;
+  };
 }
 
 /**
