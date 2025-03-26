@@ -179,8 +179,15 @@ function retry(func, attempts) {
  * cos(3.141592653589793) ends
  *
  */
-function logger(/* func, logFunc */) {
-  throw new Error('Not implemented');
+function logger(func, logFunc) {
+  return (...args) => {
+    const argsToString = args.map((elem) => JSON.stringify(elem)).join(',');
+    const funcCall = `${func.name}(${argsToString})`;
+    logFunc(`${funcCall} starts`);
+    const result = func.apply(this, args);
+    logFunc(`${funcCall} ends`);
+    return result;
+  };
 }
 
 /**
